@@ -3,6 +3,7 @@ package br.com.tayweb.api.services;
 import br.com.tayweb.api.domain.Usuario;
 import br.com.tayweb.api.domain.dto.UsuarioDTO;
 import br.com.tayweb.api.repository.UsuarioRepository;
+import br.com.tayweb.api.services.exceptions.DataIntegratyViolationException;
 import br.com.tayweb.api.services.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,20 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public Usuario findById(Long id){
+    public Usuario findById(Long id) {
         Optional<Usuario> usuario = usuarioRepository.findById(id);
         return usuario.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
     }
 
     public Usuario save(UsuarioDTO usuarioDTO) {
+        findByEmail(usuarioDTO);
         return usuarioRepository.save(mapper.map(usuarioDTO, Usuario.class));
+    }
+
+    private void findByEmail(UsuarioDTO usuarioDTO) {
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(usuarioDTO.getEmail());
+        if (usuario.isPresent()) {
+            throw new DataIntegratyViolationException("Email já cadastrado");
+        }
     }
 }
