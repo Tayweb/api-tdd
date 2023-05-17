@@ -1,4 +1,4 @@
-package config;
+package br.com.tayweb.api.config;
 
 import br.com.tayweb.api.domain.Usuario;
 import br.com.tayweb.api.repository.UsuarioRepository;
