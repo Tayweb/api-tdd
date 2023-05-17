@@ -35,9 +35,14 @@ public class UsuarioService {
         return usuarioRepository.save(mapper.map(usuarioDTO, Usuario.class));
     }
 
+    public void delete(Long id) {
+        findById(id);
+        usuarioRepository.deleteById(id);
+    }
+
     private void findByEmail(UsuarioDTO usuarioDTO) {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(usuarioDTO.getEmail());
-        if (usuario.isPresent()) {
+        if (usuario.isPresent() && !usuario.get().getId().equals(usuarioDTO.getId())) {
             throw new DataIntegratyViolationException("Email já cadastrado");
         }
     }
