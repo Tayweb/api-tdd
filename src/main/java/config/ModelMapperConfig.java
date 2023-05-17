@@ -1,4 +1,4 @@
-package br.com.tayweb.api.config;
+package config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
