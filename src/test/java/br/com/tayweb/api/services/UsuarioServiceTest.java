@@ -3,13 +3,13 @@ package br.com.tayweb.api.services;
 import br.com.tayweb.api.domain.Usuario;
 import br.com.tayweb.api.domain.dto.UsuarioDTO;
 import br.com.tayweb.api.repository.UsuarioRepository;
+import br.com.tayweb.api.services.exceptions.DataIntegratyViolationException;
 import br.com.tayweb.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,6 +18,14 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 @SpringBootTest
 class UsuarioServiceTest {
@@ -44,13 +52,13 @@ class UsuarioServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this); // Inicia os Mocks da classe
+        openMocks(this); // Inicia os Mocks da classe
         iniciarUsuario();
     }
 
     @Test
-    void whenfindAllThenReturnAnListOfUsers() { // Quando buscar todos retorne uma lista de usuário
-        Mockito.when(usuarioRepository.findAll()).thenReturn(List.of(usuario));
+    void quandoBuscarTodosDeveraRetornarListaUsuario() {
+        when(usuarioRepository.findAll()).thenReturn(List.of(usuario));
 
         List<Usuario> response = usuarioService.findAll();
 
@@ -60,8 +68,8 @@ class UsuarioServiceTest {
     }
 
     @Test
-    void whenfindByIdThenReturnAnUserInstance() { // Quando fizer a busca por id retorne uma instancia de usuário
-        Mockito.when(usuarioRepository.findById(Mockito.anyLong())).thenReturn(optionalUsuario); // Faz o Mock das informações no repository para quando o service chamar ele, vim os dados mockado
+    void quandoBuscarPorIdDeveRetornarInstanciaUsuario() {
+        when(usuarioRepository.findById(Mockito.anyLong())).thenReturn(optionalUsuario); // Faz o Mock das informações no repository para quando o service chamar ele, vim os dados mockado
 
         Usuario response = usuarioService.findById(ID);
 
@@ -73,8 +81,8 @@ class UsuarioServiceTest {
     }
 
     @Test
-    void whenFindByIdThenReturnAnObjectNotFoundException() {
-        Mockito.when(usuarioRepository.findById(Mockito.anyLong()))
+    void quandoBuscarIdInexistenteDeveraRetornarObjetoNaoEncontrado() {
+        when(usuarioRepository.findById(Mockito.anyLong()))
                 .thenThrow(new ObjectNotFoundException("Usuário não encontrado"));
         try {
             usuarioService.findById(ID);
@@ -85,11 +93,50 @@ class UsuarioServiceTest {
     }
 
     @Test
-    void save() {
+    void quandoSalvarUsuarioDeveraRetornarStatusSucesso() {
+        when(usuarioRepository.save(any())).thenReturn(usuario);
+
+        Usuario response = usuarioService.save(usuarioDTO);
+
+        assertNotNull(response);
+        assertEquals(Usuario.class, response.getClass());
+        assertEquals(ID, response.getId());
+        assertEquals(NOME, response.getNome());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(SENHA, response.getSenha());
     }
 
     @Test
-    void delete() {
+    void quandoSalvarUsuarioComEmailJaCadastradoDeverarRetornarVioalaoIntegridade() {
+        when(usuarioRepository.findByEmail(anyString())).thenReturn(optionalUsuario);
+
+        try {
+            optionalUsuario.get().setId(2L);
+            usuarioService.save(usuarioDTO);
+        } catch (Exception e) {
+            assertEquals(DataIntegratyViolationException.class, e.getClass());
+            assertEquals("Email já cadastrado", e.getMessage());
+        }
+    }
+
+    @Test
+    void quandoDeletarUsuarioDeveraRotornarStatusSucesso() {
+        when(usuarioRepository.findById(anyLong())).thenReturn(optionalUsuario);
+        doNothing().when(usuarioRepository).deleteById(anyLong());
+        usuarioService.delete(ID);
+        verify(usuarioRepository, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    void quandoDeletarUsuarioDeveraRotornarUsuarioNaoEncontrado() {
+        when(usuarioRepository.findById(Mockito.anyLong()))
+                .thenThrow(new ObjectNotFoundException("Usuário não encontrado"));
+        try {
+            usuarioService.delete(ID);
+        }catch (Exception e) {
+            assertEquals(ObjectNotFoundException.class, e.getClass());
+            assertEquals("Usuário não encontrado", e.getMessage());
+        }
     }
 
     private void iniciarUsuario() {
