@@ -1,10 +1,10 @@
-package br.com.tayweb.api.services;
+package br.com.tayweb.api.service;
 
 import br.com.tayweb.api.domain.Usuario;
 import br.com.tayweb.api.domain.dto.UsuarioDTO;
 import br.com.tayweb.api.repository.UsuarioRepository;
-import br.com.tayweb.api.services.exceptions.DataIntegratyViolationException;
-import br.com.tayweb.api.services.exceptions.ObjectNotFoundException;
+import br.com.tayweb.api.service.exceptions.DataIntegratyViolationException;
+import br.com.tayweb.api.service.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

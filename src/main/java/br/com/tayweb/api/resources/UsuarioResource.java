@@ -1,7 +1,7 @@
 package br.com.tayweb.api.resources;
 
 import br.com.tayweb.api.domain.dto.UsuarioDTO;
-import br.com.tayweb.api.services.UsuarioService;
+import br.com.tayweb.api.service.UsuarioService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

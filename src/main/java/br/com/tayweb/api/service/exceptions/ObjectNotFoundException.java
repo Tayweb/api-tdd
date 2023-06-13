@@ -1,4 +1,4 @@
-package br.com.tayweb.api.services.exceptions;
+package br.com.tayweb.api.service.exceptions;
 
 public class ObjectNotFoundException extends RuntimeException{
 

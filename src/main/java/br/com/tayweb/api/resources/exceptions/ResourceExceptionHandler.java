@@ -1,7 +1,7 @@
 package br.com.tayweb.api.resources.exceptions;
 
-import br.com.tayweb.api.services.exceptions.DataIntegratyViolationException;
-import br.com.tayweb.api.services.exceptions.ObjectNotFoundException;
+import br.com.tayweb.api.service.exceptions.DataIntegratyViolationException;
+import br.com.tayweb.api.service.exceptions.ObjectNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

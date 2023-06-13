@@ -1,10 +1,10 @@
-package br.com.tayweb.api.services;
+package br.com.tayweb.api.service;
 
 import br.com.tayweb.api.domain.Usuario;
 import br.com.tayweb.api.domain.dto.UsuarioDTO;
 import br.com.tayweb.api.repository.UsuarioRepository;
-import br.com.tayweb.api.services.exceptions.DataIntegratyViolationException;
-import br.com.tayweb.api.services.exceptions.ObjectNotFoundException;
+import br.com.tayweb.api.service.exceptions.DataIntegratyViolationException;
+import br.com.tayweb.api.service.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,6 +16,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.Optional;
 
+import static br.com.tayweb.api.shared.ConstantsTest.EMAIL;
+import static br.com.tayweb.api.shared.ConstantsTest.ID;
+import static br.com.tayweb.api.shared.ConstantsTest.NOME;
+import static br.com.tayweb.api.shared.ConstantsTest.SENHA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,10 +34,6 @@ import static org.mockito.MockitoAnnotations.openMocks;
 @SpringBootTest
 class UsuarioServiceTest {
 
-    public static final long ID = 1L;
-    public static final String NOME = "Augusto";
-    public static final String EMAIL = "augusto@gmail.com";
-    public static final String SENHA = "123";
     @Mock
     private UsuarioRepository usuarioRepository;
 
