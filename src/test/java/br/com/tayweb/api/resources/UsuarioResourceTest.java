@@ -20,6 +20,10 @@ import static br.com.tayweb.api.shared.ConstantsTest.SENHA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -76,11 +80,26 @@ class UsuarioResourceTest {
     }
 
     @Test
-    void update() {
+    void deveAtualizarUsuarioSucesso() {
+        when(usuarioService.save(usuarioDTO)).thenReturn(usuario);
+        when(modelMapper.map(usuario, UsuarioDTO.class)).thenReturn(usuarioDTO);
+
+        ResponseEntity<UsuarioDTO> response = usuarioResource.update(usuarioDTO);
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(UsuarioDTO.class, response.getBody().getClass());
     }
 
     @Test
-    void delete() {
+    void deveDeletarUsuarioSucesso() {
+        doNothing().when(usuarioService).delete(anyLong());
+
+        ResponseEntity<UsuarioDTO> response = usuarioResource.delete(ID);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(usuarioService, times(1)).delete(anyLong());
     }
 
     private void iniciarUsuario() {
